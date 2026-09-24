@@ -10,49 +10,61 @@ import Image from 'next/image'
 const projects = [
   {
     id: 1,
-    title: 'Nairobi Emergency Dashboard (NED)',
-    description: 'A real-time, AI-powered emergency command center built for NADEMA that aggregates crowdsourced field updates and automates crisis summaries, accelerating disaster deployment and reducing response times across Nairobi County.',
-    tech: ['Streamlit', 'Python', 'Google Sheets API', 'Google Apps Script', 'Plotly Mapbox'],
-    category: 'Data Visualization',
-    gradient: 'from-orange-500/20 via-red-500/10 to-transparent',
+    title: 'Support-AI',
+    tagline: 'Full-stack AI customer support platform with intelligent chat and smart escalation.',
+    description: 'Support-AI is a full-stack engineering project showcasing backend API design, database architecture, and AI integration. The platform uses AI to handle routine support questions with knowledge base retrieval, but intelligently escalates complex issues to humans. From architecture to deployment, this project demonstrates production-grade software engineering practices.',
+    tech: ['FastAPI', 'React', 'PostgreSQL', 'Python', 'LLM Integration', 'Docker'],
+    metrics: ['70+ Conversations', '24.3% Escalation Rate', '5.0/5 Satisfaction', '3.6s Response Time'],
+    category: 'Full-Stack AI',
+    gradient: 'from-purple-500/20 via-violet-500/10 to-transparent',
     featured: true,
-    image: '/images/nairobi-dashboard.png',
-    demoUrl: 'https://nairobi-dashboard-web.vercel.app/',
+    stats: '5.0/5 Satisfaction',
+    image: '/images/support-ai.png',
+    imagePosition: 'object-top',
+    demoUrl: 'https://supportai.dianamayalo.workers.dev/',
   },
   {
     id: 2,
-    title: 'MAYA Tech',
-    description: 'An innovative technology agency specializing in custom business automation, data-driven dashboards, and predictive intelligence solutions for scaling enterprises.',
-    tech: ['Python', 'Google Apps Script', 'n8n', 'Make', 'Looker Studio', 'Gemini/GPT APIs'],
-    category: 'Business Automation',
-    gradient: 'from-primary/20 via-cyan-500/10 to-transparent',
-    featured: true,
-    image: '/images/maya-tech.png',
-    demoUrl: '#', // Add your live demo URL here
-  },
-  {
-    id: 3,
-    title: 'CleanWater AI',
-    description: 'Developed an end-to-end machine learning system integrating WPDx, GEMS, and Google Earth Engine satellite data to monitor water quality and predict contamination risks across 22,000+ water points in Kenya.',
-    tech: ['Python', 'XGBoost', 'NLP', 'Streamlit', 'Google Earth Engine API', 'Docker'],
-    category: 'ML & Remote Sensing',
-    gradient: 'from-blue-500/20 via-cyan-500/10 to-transparent',
-    featured: true,
-    image: '/images/cleanwater-ai.png',
-    demoUrl: '#', // Add your live demo URL here
-    githubUrl: '#', // Add your GitHub URL here
-  },
-  {
-    id: 4,
-    title: 'Crop Disease Classification with CNN',
-    description: 'Built and deployed a custom convolutional neural network using TensorFlow/Keras to classify 15 types of healthy and diseased crop leaves from the PlantVillage dataset with data augmentation and Streamlit web deployment.',
-    tech: ['Python', 'TensorFlow/Keras', 'CNN', 'Computer Vision', 'Streamlit', 'Scikit-learn'],
+    title: 'Crop Disease Classification (CNN)',
+    tagline: 'Deep learning model identifying 15 types of healthy and diseased crop leaves with 94% accuracy.',
+    description: 'This computer vision project applies CNNs to solve a real agricultural problem: early disease detection. Using the PlantVillage dataset of 15,000+ crop images, I built and trained a custom CNN architecture with data augmentation techniques to achieve high accuracy on multi-class classification. The model is deployed as an interactive Streamlit app where farmers can upload leaf photos and get instant disease predictions.',
+    tech: ['TensorFlow', 'Keras', 'CNN', 'Computer Vision', 'Streamlit', 'Scikit-learn'],
+    metrics: ['94% Accuracy', '15 Disease Classes', 'Data Augmentation', 'Interactive Deployment'],
     category: 'Deep Learning',
     gradient: 'from-green-500/20 via-emerald-500/10 to-transparent',
     featured: true,
     stats: '94% Accuracy',
     image: '/images/crop-disease.png',
-    githubUrl: '#', // Add your GitHub URL here
+    githubUrl: 'https://github.com/DianaMayalo/Crop-Disease-Detection',
+  },
+  {
+    id: 3,
+    title: 'CleanWater AI',
+    tagline: 'End-to-end ML system monitoring water quality across 22,000+ water points in Kenya.',
+    description: 'I built CleanWater AI to solve a critical problem: tracking water quality across Kenya\'s vast landscape. The system integrates satellite imagery from Google Earth Engine, crowdsourced data from WPDx and GEMS APIs, and machine learning to predict contamination risks. The result is a production-deployed application that helps identify unsafe water sources before they affect communities.',
+    tech: ['Python', 'XGBoost', 'Google Earth Engine', 'Streamlit', 'Docker', 'NLP'],
+    metrics: ['94% Accuracy', '22,000+ Water Points', 'Multi-Source Data', 'Live in Production'],
+    category: 'ML & Remote Sensing',
+    gradient: 'from-blue-500/20 via-cyan-500/10 to-transparent',
+    featured: true,
+    stats: '94% Accuracy',
+    image: '/images/cleanwater-ai.png',
+    demoUrl: 'https://cleanwatai.streamlit.app/',
+    githubUrl: 'https://github.com/DianaMayalo/CleanWatAI',
+  },
+  {
+    id: 4,
+    title: 'Nairobi Emergency Dashboard (NED)',
+    tagline: 'Real-time emergency command center automating crisis response for Nairobi County.',
+    description: 'NED is more than a dashboard. It is a working product deployed with real users. I built it for NADEMA (Nairobi Disaster & Emergency Management Authority) to accelerate their response to crises. The system automatically collects field reports via Google Sheets, processes them with Python automation, and creates real-time maps showing where help is needed most.',
+    tech: ['Streamlit', 'Python', 'Google Sheets API', 'Google Apps Script', 'Plotly Mapbox'],
+    metrics: ['Active Users', 'Real-Time Processing', 'Measurable Impact', 'Production Deployment'],
+    category: 'Data Visualization',
+    gradient: 'from-orange-500/20 via-red-500/10 to-transparent',
+    featured: true,
+    stats: 'Live with Real Users',
+    image: '/images/nairobi-dashboard.png',
+    demoUrl: 'https://nairobi-emergency-dashboard-ned.onrender.com/',
   },
 ]
 
@@ -86,7 +98,10 @@ export function Projects() {
                   src={project.image}
                   alt={project.title}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className={cn(
+                    'object-cover transition-transform duration-500 group-hover:scale-105',
+                    project.imagePosition ?? 'object-center'
+                  )}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
                 {project.stats && (
@@ -115,10 +130,27 @@ export function Projects() {
                   </div>
                 </div>
 
+                {/* Tagline */}
+                <p className="text-foreground/90 font-medium mb-2 text-sm">
+                  {project.tagline}
+                </p>
+
                 {/* Description */}
                 <p className="text-muted-foreground mb-4 leading-relaxed text-sm">
                   {project.description}
                 </p>
+
+                {/* Metrics */}
+                <ul className="grid grid-cols-2 gap-2 mb-4">
+                  {project.metrics.map((metric) => (
+                    <li
+                      key={metric}
+                      className="px-3 py-2 rounded-lg bg-primary/5 border border-primary/10 text-xs font-semibold text-foreground/80"
+                    >
+                      {metric}
+                    </li>
+                  ))}
+                </ul>
 
                 {/* Tech stack */}
                 <div className="flex flex-wrap gap-2 mb-4">
