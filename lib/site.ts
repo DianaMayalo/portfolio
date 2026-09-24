@@ -6,8 +6,7 @@ export const site = {
   location: 'Nairobi, Kenya',
   github: 'https://github.com/dianamayalo',
   linkedin: 'https://linkedin.com/in/dianamayalo',
-  /** The PDF in /public keeps its original filename; browsers percent-encode the spaces. */
-  cvHref: '/Diana Mayalo CV ..pdf',
+  cvHref: '/Diana-Mayalo-CV.pdf',
 } as const
 
 /** Primary navigation. Absolute hashes so links work from /projects/* and /card too. */
