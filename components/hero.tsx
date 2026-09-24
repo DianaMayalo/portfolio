@@ -29,7 +29,7 @@ export function Hero() {
             {site.name}
           </h1>
           <h2 className="text-2xl md:text-3xl text-primary font-medium">
-            Junior Data Scientist & AI Automation Engineer
+            Data Scientist & AI Automation Engineer
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
             I build intelligent systems and data-driven solutions. Specializing in machine learning,

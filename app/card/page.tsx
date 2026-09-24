@@ -22,7 +22,7 @@ const socials = [
   },
   {
     name: 'LinkedIn',
-    href: 'https://linkedin.com/in/dianamayalo',
+    href: 'https://www.linkedin.com/in/dianamayalo22/',
     icon: Linkedin,
   },
   {
@@ -59,7 +59,7 @@ export default function CardPage() {
                 Diana Mayalo
               </h1>
               <p className="text-muted-foreground text-lg">
-                Junior Data Scientist & AI Automation Engineer
+                Data Scientist & AI Automation Engineer
               </p>
               
               {/* Availability badge */}

@@ -26,12 +26,12 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Diana Mayalo | Data Scientist & AI Engineer',
-  description: 'Junior Data Scientist & AI Automation Engineer specializing in machine learning, data analytics, and intelligent automation solutions.',
+  description: 'Data Scientist & AI Automation Engineer specializing in machine learning, data analytics, and intelligent automation solutions.',
   keywords: ['Data Science', 'AI', 'Machine Learning', 'Python', 'TensorFlow', 'Automation'],
   authors: [{ name: 'Diana Mayalo' }],
   openGraph: {
     title: 'Diana Mayalo | Data Scientist & AI Engineer',
-    description: 'Junior Data Scientist & AI Automation Engineer specializing in machine learning, data analytics, and intelligent automation solutions.',
+    description: 'Data Scientist & AI Automation Engineer specializing in machine learning, data analytics, and intelligent automation solutions.',
     type: 'website',
   },
 }

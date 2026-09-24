@@ -5,7 +5,7 @@ export const site = {
   phoneHref: 'tel:+254799249060',
   location: 'Nairobi, Kenya',
   github: 'https://github.com/dianamayalo',
-  linkedin: 'https://linkedin.com/in/dianamayalo',
+  linkedin: 'https://www.linkedin.com/in/dianamayalo22/',
   cvHref: '/Diana-Mayalo-CV.pdf',
 } as const
 

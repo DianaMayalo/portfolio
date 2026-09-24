@@ -95,7 +95,7 @@ export function Contact() {
                 <Github className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
               </a>
               <a
-                href="https://linkedin.com/in/dianamayalo"
+                href="https://www.linkedin.com/in/dianamayalo22/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-primary/10 flex items-center justify-center transition-all group"
