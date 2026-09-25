@@ -64,7 +64,7 @@ const projects = [
     featured: true,
     stats: 'Live with Real Users',
     image: '/images/nairobi-dashboard.png',
-    demoUrl: 'https://nairobi-emergency-dashboard-ned.onrender.com/',
+    demoUrl: 'https://nairobi-dashboard-demo.vercel.app/try',
   },
 ]
 
