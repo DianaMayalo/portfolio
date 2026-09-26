@@ -83,7 +83,7 @@ export function Hero() {
           </div>
         </div>
 
-        <HeroMap className="hidden lg:block" />
+        <HeroMap className="mx-auto lg:mx-0" />
       </div>
     </section>
   )

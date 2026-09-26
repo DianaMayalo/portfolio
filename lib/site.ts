@@ -1,8 +1,6 @@
 export const site = {
   name: 'Diana Mayalo',
   email: 'dianamayalo28@gmail.com',
-  phone: '+254 799 249 060',
-  phoneHref: 'tel:+254799249060',
   location: 'Nairobi, Kenya',
   github: 'https://github.com/dianamayalo',
   linkedin: 'https://www.linkedin.com/in/dianamayalo22/',
@@ -12,6 +10,7 @@ export const site = {
 /** Primary navigation. Absolute hashes so links work from /projects/* and /card too. */
 export const navItems = [
   { label: 'About', href: '/#about', id: 'about' },
+  { label: 'Experience', href: '/#experience', id: 'experience' },
   { label: 'Projects', href: '/#projects', id: 'projects' },
   { label: 'Contact', href: '/#contact', id: 'contact' },
 ] as const
