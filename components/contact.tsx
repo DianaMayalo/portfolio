@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Linkedin, Github, Phone, MapPin, Send } from 'lucide-react'
+import { Mail, Linkedin, Github, MapPin, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
@@ -54,20 +54,6 @@ export function Contact() {
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
                   <p className="font-medium group-hover:text-primary transition-colors">dianamayalo28@gmail.com</p>
-                </div>
-              </a>
-
-              {/* Phone */}
-              <a
-                href="tel:+254799249060"
-                className="flex items-center gap-4 p-4 rounded-lg hover:bg-card transition-colors group"
-              >
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Phone</p>
-                  <p className="font-medium group-hover:text-primary transition-colors">+254 799 249 060</p>
                 </div>
               </a>
 

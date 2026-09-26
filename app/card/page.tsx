@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, Linkedin, Mail, Phone, ArrowUpRight, Download } from 'lucide-react'
+import { Github, Linkedin, Mail, ArrowUpRight, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { site } from '@/lib/site'
@@ -29,11 +29,6 @@ const socials = [
     name: 'Email',
     href: 'mailto:dianamayalo28@gmail.com',
     icon: Mail,
-  },
-  {
-    name: 'Phone',
-    href: 'tel:+254799249060',
-    icon: Phone,
   },
 ]
 
@@ -93,8 +88,8 @@ export default function CardPage() {
                 <a
                   key={social.name}
                   href={social.href}
-                  target={social.name !== 'Phone' ? '_blank' : undefined}
-                  rel={social.name !== 'Phone' ? 'noopener noreferrer' : undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                   aria-label={social.name}
                 >
