@@ -1,33 +1,37 @@
-# DianaMayalo-Portolio
+# Diana Mayalo — Portfolio
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Portfolio site for Diana Mayalo, Data Scientist & AI Automation Engineer in Nairobi.
 
-## Built with v0
+Built with Next.js (App Router), TypeScript and Tailwind CSS v4. Dark-only editorial design: near-black / warm-paper / one orange, Geist throughout, numbered sections with a side rail, giant-name hero on a dot grid, work rows with a marquee hover, sticky big-number services, tool marquees, reticle cursor, ⌘K command palette and a Null Island 404. All motion is CSS (scroll-driven animations and React `<ViewTransition>`), no animation library.
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
-
-[Continue working on v0 →](https://v0.app/chat/projects/prj_eF9qsK4gUXiiyOV9m4vt6KhxcrUa)
-
-## Getting Started
-
-First, run the development server:
+## Develop
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Content
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All copy lives in typed content objects — no CMS:
 
-## Learn More
+- `content/site.ts` — name, role, email, links, availability, the About statement and stats, services, philosophy, process, current focus and "why work with me"
+- `content/skills.ts` — the Toolkit groups and the two big marquees
+- `content/projects.ts` — case studies (problem → role → decisions → outcomes), work experience and education
 
-To learn more, take a look at the following resources:
+Project images live in `public/images/`. The CV is `public/Diana-Mayalo-CV.pdf` (`resumeUrl` in `content/site.ts`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+To change the accent colour, edit the `--accent*` tokens at the top of `app/globals.css`.
+
+## Routes
+
+- `/` — the single-page portfolio
+- `/projects/[slug]` — one case study per project in `content/projects.ts`
+- `/card` — a shareable one-screen card with links and the CV
+
+## Contact form
+
+The form in the "Let's talk" dialog sends through Resend (`app/actions/contact.ts`). Set `RESEND_API_KEY` (see `.env.example`). Until then it tells visitors to email directly.
+
+## Deploy (Vercel)
+
+Import the repo; the framework is auto-detected. `NEXT_PUBLIC_SITE_URL` is optional — Vercel's production host is used for metadata and the sitemap when it is unset.

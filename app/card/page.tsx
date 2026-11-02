@@ -1,127 +1,81 @@
-'use client'
+import type { Metadata } from "next";
+import Link from "next/link";
+import { site } from "@/content/site";
+import { marquees } from "@/content/skills";
+import { ArrowIcon, primaryButton, secondaryButton } from "@/components/Buttons";
+import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/Icons";
+import { LocalTime } from "@/components/LocalTime";
 
-import { Github, Linkedin, Mail, ArrowUpRight, Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { site } from '@/lib/site'
-
-const skills = [
-  'Machine Learning',
-  'Python',
-  'TensorFlow',
-  'Data Analysis',
-  'Power BI',
-  'SQL',
-]
+export const metadata: Metadata = {
+  title: "Card",
+  description: `${site.name} — ${site.role}. Links, CV and a way to get in touch.`,
+};
 
 const socials = [
-  {
-    name: 'GitHub',
-    href: 'https://github.com/dianamayalo',
-    icon: Github,
-  },
-  {
-    name: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/dianamayalo22/',
-    icon: Linkedin,
-  },
-  {
-    name: 'Email',
-    href: 'mailto:dianamayalo28@gmail.com',
-    icon: Mail,
-  },
-]
+  { name: "GitHub", href: site.github, Icon: GitHubIcon },
+  ...(site.linkedin ? [{ name: "LinkedIn", href: site.linkedin, Icon: LinkedInIcon }] : []),
+  { name: "Email", href: `mailto:${site.email}`, Icon: MailIcon },
+];
 
+/** A shareable one-screen card: who, what, where, and the two things to click. */
 export default function CardPage() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
-      <div className="w-full max-w-lg">
-        {/* Card container */}
-        <div className="relative">
-          {/* Glow effect */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl" />
-          
-          {/* Main card */}
-          <div className="relative bg-card border border-border rounded-2xl p-8 md:p-10">
-            {/* Header */}
-            <div className="text-center mb-8">
-              {/* Avatar placeholder */}
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/30 flex items-center justify-center">
-                <span className="text-3xl font-bold text-primary">DM</span>
-              </div>
-              
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Diana Mayalo
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                Data Scientist & AI Automation Engineer
-              </p>
-              
-              {/* Availability badge */}
-              <div className="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                </span>
-                <span className="text-sm text-emerald-400">Available for opportunities</span>
-              </div>
-            </div>
+    <div className="relative isolate overflow-hidden">
+      <div aria-hidden="true" className="dot-grid absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_80%_70%_at_50%_40%,#000_30%,transparent_100%)]" />
+      <div aria-hidden="true" className="absolute -top-64 left-1/2 -z-10 h-[48rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_91_46/0.15),transparent)]" />
 
-            {/* Skills */}
-            <div className="mb-8">
-              <p className="text-sm text-muted-foreground mb-3 text-center">Core Skills</p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1 text-sm bg-muted rounded-full text-muted-foreground"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Social links */}
-            <div className="flex justify-center gap-3 mb-8">
-              {socials.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-                  aria-label={social.name}
-                >
-                  <social.icon className="w-5 h-5" />
-                </a>
-              ))}
-            </div>
-
-            {/* CTA buttons */}
-            <div className="space-y-3">
-              <Button asChild className="w-full group" size="lg">
-                <Link href="/">
-                  View Full Portfolio
-                  <ArrowUpRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Link>
-              </Button>
-              
-              <Button variant="outline" asChild className="w-full" size="lg">
-                <a href={site.cvHref} download>
-                  <Download className="mr-2 w-4 h-4" />
-                  Download CV
-                </a>
-              </Button>
-            </div>
+      <div className="container-x flex min-h-[calc(100svh-4.25rem)] items-center justify-center pt-28 pb-20">
+        <div className="w-full max-w-lg rounded-3xl border border-border bg-surface p-8 sm:p-10">
+          <div className="text-center">
+            <span className="mx-auto grid size-20 place-items-center rounded-full border border-border-strong text-2xl font-semibold tracking-tight">
+              {site.initials}
+            </span>
+            <h1 className="mt-6 text-[clamp(2rem,6vw,2.75rem)] leading-none font-semibold tracking-[-0.045em]">{site.name}</h1>
+            <p className="mt-3 text-lg font-medium tracking-[-0.02em] text-accent-text">{site.role}</p>
+            <p className="mt-5 inline-flex items-center gap-3 rounded-full border border-border-strong px-4 py-2 text-sm">
+              <span className="relative flex size-2" aria-hidden="true">
+                <span className="hp-pulse absolute inline-flex size-full rounded-full bg-accent" />
+                <span className="relative inline-flex size-2 rounded-full bg-accent" />
+              </span>
+              {site.availability}
+            </p>
           </div>
-        </div>
 
-        {/* Footer */}
-        <p className="text-center text-muted-foreground text-sm mt-6">
-          Nairobi, Kenya
-        </p>
+          <p className="eyebrow mt-10 text-center text-[11px] text-muted">Core toolkit</p>
+          <p className="mt-3 text-center font-mono text-xs leading-relaxed text-soft">{marquees.flat().join(" / ")}</p>
+
+          <ul className="mt-8 flex justify-center gap-3">
+            {socials.map(({ name, href, Icon }) => (
+              <li key={name}>
+                <a
+                  href={href}
+                  {...(href.startsWith("mailto:") ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+                  aria-label={name}
+                  className="grid size-11 place-items-center rounded-full border border-border-strong text-soft transition-colors hover:border-accent hover:bg-accent hover:text-background"
+                >
+                  <Icon size={18} />
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-10 flex flex-col gap-3">
+            <Link href="/" className={`${primaryButton} justify-center`}>
+              View full portfolio
+              <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            {site.resumeUrl && (
+              <a href={site.resumeUrl} download className={`${secondaryButton} justify-center`}>
+                Download CV
+              </a>
+            )}
+          </div>
+
+          <p className="mt-8 text-center font-mono text-xs text-muted">
+            {site.location.based} · <LocalTime showZone />
+          </p>
+        </div>
       </div>
     </div>
-  )
+  );
 }
