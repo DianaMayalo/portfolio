@@ -1,479 +1,406 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-/*
-  ── Motion preference ──────────────────────
-  `--reduce-motion` is the single boolean the whole motion layer keys off:
-
-    • 0 — animation is welcome (the default, and always the OS default).
-    • 1 — suppress motion. Set by `[data-reduce-motion='true']` below, which the
-          accessibility panel applies *and* which the stylesheet applies
-          automatically from `prefers-reduced-motion`.
-
-  GSAP reads it through `matchMedia('(prefers-reduced-motion: no-preference)')
-  and (--reduce-motion: 0)'` in lib/motion.ts. A custom property is not
-  `prefers-reduced-motion`, so querying it does not itself depend on the OS
-  setting, and changing it where it is registered fires `change` — that is what
-  lets the in-app switch stop timelines that are already running. (Selector
-  queries such as `(html:not(.dark))` are NOT valid media features and fail to
-  parse, so this is the only reliable channel.)
-*/
-@property --reduce-motion {
-  syntax: '<number>';
-  inherits: true;
-  initial-value: 0;
-}
-
+/* Dark-only: near-black ink, warm paper text, one orange. */
 :root {
-  --reduce-motion: 0;
-}
-
-:root[data-reduce-motion='true'] {
-  --reduce-motion: 1;
-}
-
-/* No in-app preference set: mirror the OS setting. */
-@media (prefers-reduced-motion: reduce) {
-  :root:not([data-reduce-motion]) {
-    --reduce-motion: 1;
-  }
-}
-
-/*
-  Design tokens — Diana Mayalo portfolio
-  Identity: teal on navy-slate, Geist Sans + Geist Mono.
-
-  `:root` is the LIGHT theme; `.dark` overrides it. next-themes writes
-  `class="dark"` on <html> (attribute="class", defaultTheme="dark",
-  enableSystem — see components/theme-provider.tsx), and the pre-paint script
-  in app/layout.tsx resolves the stored mode before first paint.
-
-  Both palettes carry the full token set so either one is complete on its own:
-  light never inherits a dark value, and vice versa.
-
-  Hex equivalents and WCAG contrast (against --background) are noted so the
-  values can be audited without a converter.
-
-  --border is decorative (cards, dividers) and is NOT meant to satisfy
-  non-text contrast. Component boundaries that must be perceivable use:
-    --input   form fields + outline buttons    #5C656B  3.4:1
-    --ring    focus ring                        #00CCA8  9.8:1
-    --primary filled buttons / active states    #00CCA8  9.8:1
-*/
-:root {
-  --background: oklch(0.98 0.01 240);
-  --foreground: oklch(0.13 0.015 240);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.015 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.015 240);
-  --primary: oklch(0.55 0.15 175);
-  --primary-foreground: oklch(0.98 0.01 240);
-  --secondary: oklch(0.95 0.01 240);
-  --secondary-foreground: oklch(0.13 0.015 240);
-  --muted: oklch(0.95 0.01 240);
-  --muted-foreground: oklch(0.45 0.01 240);
-  --accent: oklch(0.55 0.15 175);
-  --accent-foreground: oklch(0.98 0.01 240);
-  --destructive: oklch(0.537 0.237 25.331);
-  --destructive-foreground: oklch(0.98 0.01 240);
-  --border: oklch(0.90 0.015 240);
-  --input: oklch(0.50 0.015 240);
-  --ring: oklch(0.55 0.15 175);
-  --chart-1: oklch(0.55 0.15 175);
-  --chart-2: oklch(0.596 0.17 162.48);
-  --chart-3: oklch(0.669 0.188 70.08);
-  --chart-4: oklch(0.527 0.265 303.9);
-  --chart-5: oklch(0.545 0.246 16.439);
+  --background: #0b0b0c;
+  --surface: #111113;
+  --foreground: #f3f0ea;
+  /* Body copy: a step down from the headline paper. */
+  --soft: #d4d0c8;
+  --muted: #8f8b84;
+  --border: rgb(243 240 234 / 0.1);
+  --border-strong: rgb(243 240 234 / 0.22);
+  --accent: #ff5b2e;
+  /* Small orange text needs a lighter tint to stay readable. */
+  --accent-text: #ff7b52;
+  /* Filled buttons: deep enough for white text. */
+  --accent-strong: #d2400f;
+  --accent-soft: rgb(255 91 46 / 0.1);
+  --ease-out: cubic-bezier(0.2, 0.7, 0, 1);
   --radius: 0.75rem;
-  --sidebar: oklch(0.98 0.01 240);
-  --sidebar-foreground: oklch(0.13 0.015 240);
-  --sidebar-primary: oklch(0.55 0.15 175);
-  --sidebar-primary-foreground: oklch(0.98 0.01 240);
-  --sidebar-accent: oklch(0.95 0.01 240);
-  --sidebar-accent-foreground: oklch(0.13 0.015 240);
-  --sidebar-border: oklch(0.90 0.015 240);
-  --sidebar-ring: oklch(0.55 0.15 175);
-
-  --header-height: 4rem;
-  --reveal-duration: 800ms;
-  --reveal-distance: 24px;
-  --reveal-stagger: 80ms;
-  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-}
-
-/* Dark theme — the site default. */
-.dark {
-  --background: oklch(0.13 0.015 240);
-  --foreground: oklch(0.95 0.01 240);
-  --card: oklch(0.16 0.015 240);
-  --card-foreground: oklch(0.95 0.01 240);
-  --popover: oklch(0.16 0.015 240);
-  --popover-foreground: oklch(0.95 0.01 240);
-  --primary: oklch(0.75 0.15 175);
-  --primary-foreground: oklch(0.13 0.015 240);
-  --secondary: oklch(0.22 0.015 240);
-  --secondary-foreground: oklch(0.95 0.01 240);
-  --muted: oklch(0.22 0.015 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.75 0.15 175);
-  --accent-foreground: oklch(0.13 0.015 240);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.30 0.015 240);
-  --input: oklch(0.50 0.015 240);
-  --ring: oklch(0.75 0.15 175);
-  --chart-1: oklch(0.75 0.15 175);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.16 0.015 240);
-  --sidebar-foreground: oklch(0.95 0.01 240);
-  --sidebar-primary: oklch(0.75 0.15 175);
-  --sidebar-primary-foreground: oklch(0.13 0.015 240);
-  --sidebar-accent: oklch(0.22 0.015 240);
-  --sidebar-accent-foreground: oklch(0.95 0.01 240);
-  --sidebar-border: oklch(0.30 0.015 240);
-  --sidebar-ring: oklch(0.75 0.15 175);
+  color-scheme: dark;
 }
 
 @theme inline {
-  /* Fonts come from the next/font variables set on <html> in app/layout.tsx */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
+  --color-soft: var(--soft);
   --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+
+  /* Aliases so the shadcn/ui kit in components/ui keeps coherent colours. */
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--background);
+  --color-secondary: var(--surface);
+  --color-secondary-foreground: var(--foreground);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted);
+  --color-accent-foreground: var(--background);
+  --color-input: var(--border-strong);
+  --color-ring: var(--accent);
+  --color-destructive: #e5484d;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  /* Spacing scale for page rhythm: py-section, pt-header, scroll-mt-header */
-  --spacing-section: clamp(4rem, 8vw, 6rem);
-  --spacing-section-sm: clamp(3rem, 6vw, 4rem);
-  --spacing-header: var(--header-height);
-
-  /* Motion utilities: ease-reveal, plus site-wide transition defaults */
-  --ease-reveal: var(--ease-out-quad);
-  --default-transition-duration: var(--duration-base);
-  --default-transition-timing-function: var(--ease-out-quad);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  html {
-    scroll-behavior: smooth;
-    /* Anchor targets stop below the sticky header (WCAG 2.4.11, focus not obscured). */
-    scroll-padding-top: calc(var(--header-height) + 1rem);
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist), system-ui, sans-serif;
+}
 
-  /* Clickable things get a pointer; disabled controls say so. */
-  a[href],
-  button,
-  [role='button'],
-  label[for],
-  select,
-  summary,
-  input[type='checkbox'],
-  input[type='radio'],
-  input[type='submit'],
-  input[type='button'] {
-    cursor: pointer;
-  }
-  button:disabled,
-  [aria-disabled='true'] {
-    cursor: not-allowed;
-  }
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
 
-  /* Keyboard focus is always visible; mouse focus stays quiet. */
-  :focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* Page gutter shared by every section, header and footer. */
+@utility container-x {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 90rem;
+  padding-inline: 1.25rem;
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
   }
-  :focus:not(:focus-visible) {
-    outline: none;
+  @media (width >= 64rem) {
+    padding-inline: 3.5rem;
   }
 }
 
-/* Ambient animations (opt-in classes). All are disabled under reduced motion. */
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(0, 204, 168, 0.3); }
-  50%      { box-shadow: 0 0 40px rgba(0, 204, 168, 0.5); }
+/* Display headline used by every section. */
+@utility display-h2 {
+  font-size: clamp(2.5rem, 5.6vw, 5rem);
+  line-height: 0.98;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
+/* Mono eyebrow: "02 —— WHO I AM". In the components layer so colour and
+   size utilities can override it. */
+@layer components {
+  .eyebrow {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--soft);
+  }
 }
 
-.animate-glow  { animation: glow 2s ease-in-out infinite; }
-.animate-float { animation: float 4s ease-in-out infinite; }
+/* Faint dot grid behind the hero and contact. */
+.dot-grid {
+  background-image: radial-gradient(rgb(243 240 234 / 0.1) 1px, transparent 1.5px);
+  background-size: 32px 32px;
+}
 
-/* Hero map: roads draw on, dots fade in, the live badge and cluster rings pulse. */
-@keyframes hp-draw {
-  from { stroke-dashoffset: 1; }
-  to   { stroke-dashoffset: 0; }
+/* Hide the default disclosure triangle; summaries draw their own +. */
+summary {
+  list-style: none;
 }
-@keyframes hp-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+summary::-webkit-details-marker {
+  display: none;
 }
+
+/* ------------------------------------------------------------------
+   Time-based entrances
+   ------------------------------------------------------------------ */
+
+/* Each word rises out of its own mask. --i is the word index. */
+@keyframes word-in {
+  from {
+    transform: translateY(110%);
+  }
+}
+.word {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.12em;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.word > span {
+  display: inline-block;
+  animation: word-in 1s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 0.15s);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+.fade-up {
+  animation: fade-up 0.8s var(--ease-out) both;
+  animation-delay: var(--delay, 0s);
+}
+
+/* The big service number swaps by rolling up. */
+@keyframes number-in {
+  from {
+    opacity: 0;
+    transform: translateY(30%);
+  }
+}
+.number-in {
+  animation: number-in 0.6s var(--ease-out) both;
+}
+
+/* Live-dot pulse. */
 @keyframes hp-pulse {
-  0%   { transform: scale(1); opacity: 0.75; }
-  100% { transform: scale(2.6); opacity: 0; }
-}
-@keyframes hm-ring {
-  0%   { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(2.4); opacity: 0; }
-}
-.hp-draw {
-  stroke-dasharray: 1;
-  animation: hp-draw 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
-}
-.hp-fade  { animation: hp-fade 0.6s ease-out 1.3s both; }
-.hp-pulse { animation: hp-pulse 1.8s cubic-bezier(0, 0, 0.2, 1) infinite; }
-.hm-ring {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: hm-ring 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-/*
-  Ambient animations are also stopped by the blanket reduced-motion rules
-  further down, which key off `--reduce-motion` and therefore cover both the OS
-  setting and the in-app switch. Only `scroll-behavior` is set here, because it
-  is per-element rather than animation-based.
-*/
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-}
-
-/*
-  ── Accessibility preferences ──────────────────────────────
-  Attributes are set on <html> by the pre-paint script in app/layout.tsx and
-  kept in sync by components/accessibility-panel.tsx. Keys live in localStorage
-  under `a11y-prefs`.
-*/
-
-/*
-  Text size: percentages, not px, so a user's own browser font-size setting is
-  the baseline. Tailwind sizes everything in rem, so this one value scales the
-  entire UI — type, spacing and icon boxes alike.
-*/
-:root[data-text-size='small']  { font-size: 87.5%; }  /* 14px at a 16px default */
-:root[data-text-size='normal'] { font-size: 100%; }
-:root[data-text-size='large']  { font-size: 112.5%; } /* 18px */
-:root[data-text-size='xlarge'] { font-size: 125%; }   /* 20px */
-
-/*
-  High contrast: maximise text/background separation site-wide. Every surface a
-  token is re-declared, so cards, popovers, secondary sections and borders all
-  follow instead of keeping the muted palette on a now-white page.
-  Primary stays teal but is darkened/lightened to keep its text legible.
-*/
-:root[data-high-contrast='true'] {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0.45 0.12 175);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.92 0 0);
-  --secondary-foreground: oklch(0 0 0);
-  --muted: oklch(0.92 0 0);
-  --muted-foreground: oklch(0.25 0 0);
-  --accent: oklch(0.45 0.12 175);
-  --accent-foreground: oklch(1 0 0);
-  --border: oklch(0 0 0);
-  --input: oklch(0 0 0);
-  --ring: oklch(0.45 0.12 175);
-}
-
-.dark[data-high-contrast='true'] {
-  --background: oklch(0 0 0);
-  --foreground: oklch(1 0 0);
-  --card: oklch(0 0 0);
-  --card-foreground: oklch(1 0 0);
-  --popover: oklch(0 0 0);
-  --popover-foreground: oklch(1 0 0);
-  --primary: oklch(0.85 0.13 175);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.18 0 0);
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.18 0 0);
-  --muted-foreground: oklch(0.9 0 0);
-  --accent: oklch(0.85 0.13 175);
-  --accent-foreground: oklch(0 0 0);
-  --border: oklch(1 0 0);
-  --input: oklch(1 0 0);
-  --ring: oklch(0.85 0.13 175);
-}
-
-/*
-  High contrast also flattens surfaces that bypass the tokens.
-
-  The first group is the translucent Tailwind washes (`bg-card/50` and friends),
-  which would otherwise composite to a grey that sits between the new black text
-  and white page. Matching on the class attribute rather than the escaped class
-  name keeps this readable and catches every opacity step at once.
-
-  The second group is the JS-set colours in the skills grid: those accent and
-  border colours are per-card data (see components/skills-grid.tsx) and are
-  emitted as inline `style` by the Tailwind compiler, so they cannot be
-  overridden by a utility class. Under high contrast the colour is dropped
-  entirely — the card keeps its border and the accessible text colour — which is
-  the point of the setting.
-*/
-[data-high-contrast='true'] [class*='bg-card\\/'],
-[data-high-contrast='true'] [class*='bg-background\\/'],
-[data-high-contrast='true'] [class*='bg-secondary\\/'],
-[data-high-contrast='true'] [class*='bg-primary\\/'] {
-  background-color: var(--card) !important;
-}
-
-[data-high-contrast='true'] [class*='text-cyan-'],
-[data-high-contrast='true'] [class*='text-emerald-'],
-[data-high-contrast='true'] [class*='text-blue-'],
-[data-high-contrast='true'] [class*='text-amber-'],
-[data-high-contrast='true'] [class*='text-rose-'] {
-  color: var(--foreground) !important;
-}
-
-/* Decorative gradients and glows only lower contrast; remove them. */
-[data-high-contrast='true'] [class*='bg-gradient-'],
-[data-high-contrast='true'] [class*='bg-[radial-gradient'],
-[data-high-contrast='true'] [class*='blur-'] {
-  background-image: none !important;
-  filter: none !important;
-}
-
-/* Opt-in thicker focus ring. Base :focus-visible already draws 2px/offset 2. */
-:root[data-strong-focus='true'] *:focus-visible {
-  outline: 4px solid var(--ring) !important;
-  outline-offset: 3px !important;
-}
-
-/*
-  Reduce motion: applies to CSS animations *and* transitions, site-wide. GSAP
-  reveals are handled separately — a CSS rule cannot stop a JS tween, so
-  lib/motion.ts queries the same `--reduce-motion` value through matchMedia.
-*/
-:root[data-reduce-motion='true'] *,
-:root[data-reduce-motion='true'] *::before,
-:root[data-reduce-motion='true'] *::after {
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
-}
-
-/*
-  Movement, not just duration. Collapsing the duration alone still leaves the
-  element jumping straight to its offset, so the transform-like properties are
-  reset as well.
-
-  These must live in rules with DIFFERENT selectors. Written in one rule, or in
-  two rules sharing a selector, Lightning CSS treats `transform`/`translate`/
-  `scale` as one legacy transform declaration and collapses the block to
-  `transform: scale(1)` — which silently drops the `translate` reset and
-  reinstates the movement. The `:not(#\0)` suffix on the translate rule is a
-  no-op that matches everything but keeps the selector distinct, so the
-  minifier cannot merge the two.
-
-  Both the legacy `transform` and the individual properties are reset because
-  Tailwind v4 emits them separately: `translate-x-1.5` compiles to `translate:`,
-  and `motion-reduce:transform-none` would not cancel it.
-*/
-:root[data-reduce-motion='true'] *:not(#\0),
-:root[data-reduce-motion='true'] *::before,
-:root[data-reduce-motion='true'] *::after {
-  translate: none !important;
-}
-
-:root[data-reduce-motion='true'] *,
-:root[data-reduce-motion='true'] *::before,
-:root[data-reduce-motion='true'] *::after {
-  transform: none !important;
-  scale: none !important;
-}
-
-:root[data-reduce-motion='true'] {
-  scroll-behavior: auto !important;
-}
-
-/*
-  A user who has never touched the panel still gets their OS preference honoured:
-  the same attributes are applied for `prefers-reduced-motion` and
-  `prefers-contrast: more` at the stylesheet level.
-*/
-@media (prefers-reduced-motion: reduce) {
-  :root:not([data-reduce-motion]) *:not(#\0),
-  :root:not([data-reduce-motion]) *::before,
-  :root:not([data-reduce-motion]) *::after {
-    translate: none !important;
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
   }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.hp-pulse {
+  animation: hp-pulse 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
 
-  :root:not([data-reduce-motion]) *,
-  :root:not([data-reduce-motion]) *::before,
-  :root:not([data-reduce-motion]) *::after {
+/* Command palette: scales in from the top, backdrop fades. */
+.palette {
+  transition:
+    opacity 0.2s,
+    transform 0.25s var(--ease-out),
+    overlay 0.2s allow-discrete,
+    display 0.2s allow-discrete;
+  opacity: 0;
+  transform: translateY(-0.5rem) scale(0.98);
+}
+.palette[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .palette[open] {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.98);
+  }
+}
+
+/* Section rail label: slides in whenever the section changes (it remounts
+   per section, so the animation replays) and stays visible. */
+@keyframes rail-label {
+  from {
+    opacity: 0;
+    transform: translateX(0.5rem);
+  }
+}
+.rail-label {
+  animation: rail-label 0.5s var(--ease-out) both;
+}
+
+/* Mobile menu: the panel slides down, then links rise in one by one. */
+.menu-panel {
+  transition:
+    transform 0.5s var(--ease-out),
+    overlay 0.5s allow-discrete,
+    display 0.5s allow-discrete;
+  transform: translateY(-100%);
+}
+.menu-panel[open] {
+  transform: none;
+}
+@starting-style {
+  .menu-panel[open] {
+    transform: translateY(-100%);
+  }
+}
+.menu-panel .menu-link {
+  transition:
+    transform 0.7s var(--ease-out),
+    opacity 0.7s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 50ms + 0.15s);
+}
+@starting-style {
+  .menu-panel[open] .menu-link {
+    opacity: 0;
+    transform: translateY(80%) rotate(4deg);
+  }
+}
+
+/* Infinite marquee: the track holds two copies, so -50% loops seamlessly. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
+
+/* Work rows: the orange panel slides in from the edge the pointer came
+   through. --from is -101% (top) or 101% (bottom), set by <WorkRows>. */
+.flow-panel {
+  transform: translateY(var(--from, 101%));
+  transition: transform 0.6s var(--ease-out);
+}
+.flow-row[data-active] .flow-panel {
+  transform: translateY(0);
+}
+.flow-row[data-snap] .flow-panel {
+  transition: none;
+}
+.flow-row:not([data-active]) .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Waves on the 404. */
+@keyframes bob {
+  50% {
+    transform: translateY(-4px) rotate(-2deg);
+  }
+}
+@keyframes drift {
+  to {
+    transform: translateX(-40px);
+  }
+}
+.bob {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: bob 3.2s ease-in-out infinite;
+}
+.drift {
+  animation: drift 4s linear infinite;
+}
+
+/* Reticle cursor (see TargetCursor): hide the system pointer except where
+   you type. */
+html.has-reticle,
+html.has-reticle * {
+  cursor: none;
+}
+html.has-reticle :is(input, textarea, [contenteditable]) {
+  cursor: text;
+}
+
+/* ------------------------------------------------------------------
+   Scroll-driven animations. Progressive enhancement: browsers without
+   animation-timeline (and anyone who asks for reduced motion) get the
+   finished, static layout.
+   ------------------------------------------------------------------ */
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes word-light {
+  from {
+    opacity: 0.2;
+  }
+}
+@keyframes clip-up {
+  from {
+    clip-path: inset(14% 6% 14% 6% round 1.5rem);
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+
+    .draw-x {
+      animation: grow-x linear both;
+      animation-timeline: view();
+      animation-range: entry 50% cover 45%;
+    }
+
+    /* Statement paragraph lights up word by word as it scrolls through. */
+    .scrub-words > span {
+      animation: word-light linear both;
+      animation-timeline: view();
+      animation-range: cover calc(10% + var(--p) * 30%)
+        cover calc(14% + var(--p) * 30%);
+    }
+
+    /* Case-study screenshots unclip as they enter. */
+    .clip-reveal {
+      animation: clip-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   View transitions
+   ------------------------------------------------------------------ */
+
+/* Project screenshot morphs from the home page into the case-study hero. */
+::view-transition-group(.morph) {
+  animation-duration: 550ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    transform: none !important;
-    scale: none !important;
+    transition-delay: 0s !important;
   }
-}
-
-@media (prefers-contrast: more) {
-  :root:not([data-high-contrast]) {
-    --muted-foreground: oklch(0.30 0.01 240);
-    --border: oklch(0.35 0.02 240);
-  }
-  .dark:not([data-high-contrast]) {
-    --muted-foreground: oklch(0.85 0.01 240);
-    --border: oklch(0.55 0.02 240);
+  ::view-transition-group(*) {
+    animation: none !important;
   }
 }

@@ -1,95 +1,107 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import { BackToTop } from '@/components/back-to-top'
-import { ScrollProgress } from '@/components/scroll-progress'
-import { ThemeProvider } from '@/components/theme-provider'
-import './globals.css'
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { site } from "@/content/site";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/SiteFooter";
+import { CommandPalette } from "@/components/CommandPalette";
+import { ConsoleHello } from "@/components/ConsoleHello";
+import { ContactForm } from "@/components/ContactForm";
+import { SectionRail } from "@/components/SectionRail";
+import { TargetCursor } from "@/components/TargetCursor";
+import "./globals.css";
 
-const geistSans = Geist({
-  subsets: ['latin'],
-  variable: '--font-geist-sans',
-})
+const geist = Geist({
+  variable: "--font-geist",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-geist-mono',
-})
-
-/** Absolute base for Open Graph images. Vercel injects the production host; override with NEXT_PUBLIC_SITE_URL. */
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'http://localhost:3000')
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: 'Diana Mayalo | Data Scientist & AI Engineer',
-  description: 'Data Scientist & AI Automation Engineer specializing in machine learning, data analytics, and intelligent automation solutions.',
-  keywords: ['Data Science', 'AI', 'Machine Learning', 'Python', 'TensorFlow', 'Automation'],
-  authors: [{ name: 'Diana Mayalo' }],
-  openGraph: {
-    title: 'Diana Mayalo | Data Scientist & AI Engineer',
-    description: 'Data Scientist & AI Automation Engineer specializing in machine learning, data analytics, and intelligent automation solutions.',
-    type: 'website',
+  metadataBase: new URL(site.url),
+  title: {
+    default: `${site.name} — ${site.role}`,
+    template: `%s — ${site.name}`,
   },
-}
+  description: site.tagline,
+  keywords: ["Data Science", "AI", "Machine Learning", "Python", "TensorFlow", "XGBoost", "Automation", "Nairobi"],
+  authors: [{ name: site.name }],
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-dark-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
+  },
+  openGraph: {
+    title: `${site.name} — ${site.role}`,
+    description: site.tagline,
+    url: site.url,
+    siteName: site.name,
+    type: "website",
+  },
+};
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  email: `mailto:${site.email}`,
+  jobTitle: site.role,
+  url: site.url,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Nairobi",
+    addressCountry: "KE",
+  },
+  sameAs: [site.github, site.linkedin].filter(Boolean),
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      {/**
-       * Runs before the first paint so accessibility preferences are already on
-       * <html> when CSS resolves — no flash, no layout shift. Kept in sync with
-       * the attribute names in app/globals.css and the keys used by
-       * components/accessibility-panel.tsx.
-       * `suppressHydrationWarning` on <html> covers the attributes this sets.
-       */}
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
+    >
       <head>
+        <meta name="theme-color" content="#0b0b0c" />
         <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var prefs = JSON.parse(localStorage.getItem('a11y-prefs') || '{}');
-                var root = document.documentElement;
-                if (prefs.textSize && prefs.textSize !== 'normal') root.setAttribute('data-text-size', prefs.textSize);
-                if (prefs.highContrast) root.setAttribute('data-high-contrast', 'true');
-                if (prefs.reduceMotion) root.setAttribute('data-reduce-motion', 'true');
-                if (prefs.focusIndicators) root.setAttribute('data-strong-focus', 'true');
-              } catch (e) {}
-            `,
-          }}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
       </head>
-      {/**
-       * `suppressHydrationWarning` is required, not a workaround. Browser
-       * extensions (Grammarly, password managers, translators) inject attributes
-       * into <body> before React hydrates — `data-gr-ext-installed`,
-       * `cz-shortcut-listen`, `data-new-gr-c-s-check-loaded` and similar. React
-       * sees a server tree that no longer matches the DOM and warns. The
-       * injected attributes are outside our control and are expected, so the
-       * mismatch is acknowledged here rather than chased.
-       *
-       * This only silences the warning for this element's own attributes and
-       * text — it does NOT suppress mismatches anywhere else in the tree, and
-       * it does not affect rendering: the page stays fully server-rendered.
-       */}
-      <body
-        suppressHydrationWarning
-        className="bg-background text-foreground font-sans antialiased"
-      >
-        <ThemeProvider defaultTheme="dark" enableSystem disableTransitionOnChange>
+      {/*
+        suppressHydrationWarning: browser extensions (Grammarly, password
+        managers) inject attributes into <body> before React hydrates. It only
+        covers this element's own attributes, not the rest of the tree.
+      */}
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-foreground">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-background"
+        >
+          Skip to content
+        </a>
+        <Header />
+        <SectionRail />
+        <main id="main" className="flex-1">
           {children}
-          <BackToTop />
-          <ScrollProgress />
-        </ThemeProvider>
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        </main>
+        <Footer />
+        <CommandPalette />
+        <ContactForm />
+        <ConsoleHello />
+        <TargetCursor />
+        {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
-  )
+  );
 }
